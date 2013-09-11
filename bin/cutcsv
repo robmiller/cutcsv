@@ -1,0 +1,76 @@
+#!/usr/bin/env ruby
+
+require 'main'
+require 'letters'
+require 'csv'
+require 'pry'
+require 'pry-debugger'
+
+module Main
+  module Cast
+    # A custom cast for Main's argument processing. This allows for an
+    # argument of, for example:
+    #
+    #     1,3-5,10,11,15-20
+    #
+    # to become:
+    #
+    #     [1, 3, 4, 5, 10, 11, 15, 16, 17, 18, 19, 20]
+    #
+    # ...which allows us to process all the valid arguments to standard
+    # Unix cut's -f argument.
+    cast :list_of_integers_with_ranges do |obj|
+      obj.split(/,|\s+/).map(&:strip).delete_if(&:empty?)
+        .flat_map do |value|
+          case value
+          when /^([0-9]+)-([0-9]+)$/
+            Range.new($1.to_i, $2.to_i).to_a
+          when /^([0-9]+)$/
+            value.to_i
+          end
+        end
+    end
+  end
+end
+
+Main {
+  option('f', 'fields') {
+    description 'A comma-separated list of which fields to output. The first column is "1", not "0". So, to output the first, third, and fifth columns, pass in -f1,3,5.'
+    argument :required
+    cast :list_of_integers_with_ranges
+  }
+
+  argument('files') {
+    arity -1
+    description 'The files to process. If no file arguments are given, cutcsv will read from standard input.'
+  }
+
+  def run
+    inputs = params[:files].values
+    inputs = [STDIN] unless inputs.length > 0
+
+    fields = if params[:fields].given?
+               params[:fields].value
+             else
+               :all
+             end
+
+    inputs.each do |input|
+      unless input.respond_to?(:gets)
+        input = File.open(input, 'r')
+      end
+
+      CSV.new(input).each do |row|
+        row.each_with_index do |column, index|
+          field_number = index + 1
+
+          next unless fields == :all || fields.include?(field_number)
+
+          print "#{column}\t"
+        end
+
+        puts
+      end
+    end
+  end
+}
