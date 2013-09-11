@@ -1,6 +1,10 @@
 #!/usr/bin/env ruby
 
+require 'bundler'
+Bundler.setup
+
 require 'main'
+
 require 'csv'
 
 module Main
