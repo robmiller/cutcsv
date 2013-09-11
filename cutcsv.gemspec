@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
 
   s.license = 'MIT'
 
-  s.files = %w(bin/cutcsv LICENSE README.md Gemfile)
+  s.files = %w(bin/cutcsv LICENSE README.md Gemfile cutcsv.gemspec)
   s.executables = ['cutcsv']
   s.require_path = 'lib'
 
