@@ -62,15 +62,17 @@ Main {
       end
 
       CSV.new(input).each do |row|
+        csv_row = []
+
         row.each_with_index do |column, index|
           field_number = index + 1
 
           next unless fields == :all || fields.include?(field_number)
 
-          print "#{column}\t"
+          csv_row << column
         end
 
-        puts
+        puts CSV.generate_line(csv_row)
       end
     end
   end
