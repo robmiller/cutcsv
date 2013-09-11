@@ -1,10 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'main'
-require 'letters'
 require 'csv'
-require 'pry'
-require 'pry-debugger'
 
 module Main
   module Cast
