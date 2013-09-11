@@ -11,6 +11,12 @@ got fields that continue onto multiple lines, things get screwy fast.
 For the few times that you need to extract fields from such a file,
 `cutcsv` should have your back.
 
+## Installation
+
+`cutcsv` can be installed via RubyGems:
+
+	$ gem install cutcsv
+
 ## Usage
 
 Like standard `cut`, `cutcsv` accepts input either from standard input or
